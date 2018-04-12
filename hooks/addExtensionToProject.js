@@ -123,7 +123,7 @@ module.exports = function (context) {
         pbxProject.parseSync();
       }
 
-      var extName = EXT_NAME || projectName + ' Directory';
+      var extName = EXT_NAME || projectName + 'Directory';
       log('Your extension will be named: ' + extName, 'info');
 
       var extBundleId = EXT_BUNDLE_SUFFIX || 'calldirectory';

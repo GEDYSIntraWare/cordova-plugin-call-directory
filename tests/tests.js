@@ -11,15 +11,15 @@ exports.defineAutoTests = function() {
 
 exports.defineManualTests = function (contentEl, createActionButton) {
 
-  createActionButton("addIdent", function () {
-    window.CallDirectory.addIdent(addIdentSuccess, addIdentError);
+  createActionButton("isAvailable", function () {
+    window.CallDirectory.isAvailable(isAvailableSuccess, isAvailableError);
 
-    function addIdentSuccess(result) {
+    function isAvailableSuccess(result) {
       console.log(result);
       alert("CallDirectory available (" + result + ")");
     }
 
-    function addIdentError(message) {
+    function isAvailableError(message) {
       alert(message);
     }
   });

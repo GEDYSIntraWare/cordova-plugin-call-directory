@@ -5,7 +5,7 @@
   version="0.1.0">
   <name>CallDirectory Tests</name>
   <description>Testing</description>
-  <license>XXX</license>
+  <license>MIT</license>
   <keywords>cordova,plugin,ios</keywords>
 
   <js-module src="tests.js" name="tests">

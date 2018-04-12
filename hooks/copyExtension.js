@@ -126,7 +126,7 @@ module.exports = function(context) {
     // Get the extension name and location from the parameters or the config file
     var EXT_NAME = getCordovaParameter("EXT_NAME", contents);
     var pluginPath = context.opts.plugin.dir;
-    var extName = EXT_NAME || projectName;
+    var extName = EXT_NAME || projectName + "Directory";
 
     if (pluginPath) {
         srcFolder = path.join(
