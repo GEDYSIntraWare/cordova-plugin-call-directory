@@ -1,0 +1,50 @@
+{
+  "name": "cordova-plugin-call-directory",
+  "version": "0.0.1",
+  "description": "Cordova plugin to build an iOS Call Directory extension",
+  "license": "MIT",
+  "contributors": [
+    "Niklas Merz"
+  ],
+  "cordova": {
+    "id": "cordova-plugin-call-directory",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GEDYSIntraWare/cordova-plugin-call-directory"
+  },
+  "keywords": [
+    "cordova",
+    "plugin",
+    "calldirectory",
+    "call-id",
+    "ecosystem:cordova",
+    "cordova-ios",
+    "ios"
+  ],
+  "author": "GEDYS IntraWare",
+  "bugs": {
+    "url": "https://github.com/GEDYSIntraWare/cordova-plugin-call-directory/issues"
+  },
+  "homepage": "https://github.com/GEDYSIntraWare/cordova-plugin-call-directory#readme",
+  "dependencies": {
+    "cordova-plugin-add-swift-support": "^1.7.1",
+    "file-system": "^2.2.2",
+    "path": "^0.12.7",
+    "plist": "^2.1.0",
+    "xcode": "git+https://github.com/apache/cordova-node-xcode.git"
+  },
+  "devDependencies": {
+    "cordova-paramedic": "git+https://github.com/apache/cordova-paramedic.git",
+    "cordova-plugin-xml": "^0.1.2",
+    "eslint": "^4.14.0",
+    "jasmine": "^2.8.0"
+  },
+  "scripts": {
+    "test": "./node_modules/cordova-paramedic/main.js --plugin . --platform",
+    "plugin-version": "cordova-plugin-xml setVersion"
+  }
+}

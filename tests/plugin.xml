@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  id="cordova-plugin-call-directory-tests"
+  version="0.1.0">
+  <name>CallDirectory Tests</name>
+  <description>Testing</description>
+  <license>XXX</license>
+  <keywords>cordova,plugin,ios</keywords>
+
+  <js-module src="tests.js" name="tests">
+  </js-module>
+
+</plugin>

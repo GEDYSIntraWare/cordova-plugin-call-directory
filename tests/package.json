@@ -1,0 +1,13 @@
+{
+    "name": "cordova-plugin-call-directory-tests",
+    "version": "0.0.1-dev",
+    "description": "",
+    "cordova": {
+        "id": "cordova-plugin-call-directory-tests",
+        "platforms": ["ios"]
+    },
+    "keywords": [
+        "ecosystem:cordova"
+    ],
+    "author": "GEDYS IntraWare"
+}
