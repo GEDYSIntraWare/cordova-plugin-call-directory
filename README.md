@@ -1,5 +1,7 @@
 # cordova-plugin-call-directory
 
+[![Build Status](https://travis-ci.org/GEDYSIntraWare/cordova-plugin-call-directory.svg?branch=master)](https://travis-ci.org/GEDYSIntraWare/cordova-plugin-call-directory)
+
 ## Installation
 
 `cordova plugin add cordova-plugin-call-directory --variable EXT_NAME="Cordova-Directory" --variable ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES="NO"`
