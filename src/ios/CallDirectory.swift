@@ -23,7 +23,7 @@ import SQLite3
     
     func addIdentification(_ command: CDVInvokedUrlCommand){
         let data  = command.arguments[0] as! [Any];
-        addToTable(mode: "add", data: data)
+        runQuery(mode: "add", data: data)
         
         print("Done adding numbers to CallDirectoryAdd")
         let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "Numbers added to queue");
@@ -32,7 +32,7 @@ import SQLite3
     
     func removeIdentification(_ command: CDVInvokedUrlCommand){
         let data  = command.arguments[0] as! [Any];
-        addToTable(mode: "delete", data: data)
+        runQuery(mode: "delete", data: data)
         
         print("Done adding numbers to CallDirectoryDelete")
         let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "Numbers added to queue");
@@ -41,13 +41,13 @@ import SQLite3
     
     func removeAllIdentification(_ command: CDVInvokedUrlCommand){
         let data  = [["label": "##REMOVEALL##", "number": "000000"]];
-        addToTable(mode: "clearAll", data: data)
+        runQuery(mode: "clearAll", data: data)
         
         reloadExtension(command)
     }
     
     //Helper function
-    func addToTable(mode: String, data: [Any]) {
+    func runQuery(mode: String, data: [Any]) {
         
         var tableName = ""
         switch mode {
@@ -81,11 +81,16 @@ import SQLite3
             var stmt: OpaquePointer?
             
             //the replace query
-            var queryString = "REPLACE INTO \(tableName) (number, label) VALUES (?,?)"
-            if mode == "deleteAll" {
-                queryString = "DELETE FROM \(tableName) WHERE number = ?"
-            } else if mode == "clearAll" {
-                queryString = "DELETE FROM \(tableName)"
+            var queryString = ""
+            switch(mode) {
+                case "deleteAll":
+                    queryString = "DELETE FROM \(tableName) WHERE number = ?"
+                case "clearAll":
+                    queryString = "DELETE FROM \(tableName)"
+                case "selectAll":
+                    queryString = "SELCECT FROM \(tableName)"
+                default:
+                    queryString = "REPLACE INTO \(tableName) (number, label) VALUES (?,?)"
             }
             
             //preparing the query
@@ -143,7 +148,7 @@ import SQLite3
             
             //Repeat for all table
             if mode.range(of:"All") == nil {
-                addToTable(mode: mode + "All", data: data)
+                runQuery(mode: mode + "All", data: data)
             }
         }
     }
