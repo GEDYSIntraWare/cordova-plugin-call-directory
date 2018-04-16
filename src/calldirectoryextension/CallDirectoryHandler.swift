@@ -17,8 +17,17 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
         
         // Check whether this is an "incremental" data request
         if context.isIncremental {
-            addOrRemoveIncrementalBlockingPhoneNumbers(to: context)
-            addOrRemoveIncrementalIdentificationPhoneNumbers(to: context)
+            let defaults = UserDefaults(suiteName: "group.__APP_IDENTIFIER__")
+            if (defaults?.bool(forKey: "clearAll"))! {
+                print("Delete all")
+                context.removeAllIdentificationEntries();
+                
+                defaults?.set(false, forKey: "clearAll")
+                defaults?.synchronize()
+            } else {
+                addOrRemoveIncrementalBlockingPhoneNumbers(to: context)
+                addOrRemoveIncrementalIdentificationPhoneNumbers(to: context)
+            }
         } else {
             addAllBlockingPhoneNumbers(to: context)
             addAllIdentificationPhoneNumbers(to: context)
@@ -37,7 +46,6 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     
     //Helper function
     func handleNumbers(to context: CXCallDirectoryExtensionContext, mode: String) {
-        var deleteAll = false
         var tableName: String = "CallDirectoryAdd"
         if(mode == "addAll") {
             tableName = "CallDirectory"
@@ -57,8 +65,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                 let queryStatementString = "SELECT * FROM \(tableName) ORDER BY CAST(number AS INTEGER);"
                 var queryStatement: OpaquePointer? = nil
                 if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
-                    var run = true;
-                    while (sqlite3_step(queryStatement) == SQLITE_ROW && run) {
+                    while (sqlite3_step(queryStatement) == SQLITE_ROW) {
                         autoreleasepool {
                             let queryResultCol0 = sqlite3_column_text(queryStatement, 0)
                             let queryResultCol1 = sqlite3_column_text(queryStatement, 1)
@@ -69,14 +76,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                                 print("Query Result:")
                                 print("\(numberString) | \(label)")
                                 if number != nil {
-                                    //HACK for delete flag
-                                    if(number == 000000 && label == "##REMOVEALL##" && context.isIncremental) {
-                                        //Special number to remove all identification numbers
-                                        context.removeAllIdentificationEntries();
-                                        run = false
-                                        deleteAll = true
-                                        print("Removed all")
-                                    } else if(mode == "delete") {
+                                    if(mode == "delete") {
                                         context.removeIdentificationEntry(withPhoneNumber: number!)
                                     } else {
                                         print("Add from", tableName, numberString, number!)
@@ -93,7 +93,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                     sqlite3_finalize(queryStatement)
                     
                     //clear table
-                    if (mode != "addAll" || deleteAll) {
+                    if (mode != "addAll") {
                         if sqlite3_exec(db, "DELETE FROM \(tableName)", nil, nil, nil) != SQLITE_OK {
                             let errmsg = String(cString: sqlite3_errmsg(db)!)
                             print("error deleting from table \(errmsg)")

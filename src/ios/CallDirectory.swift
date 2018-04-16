@@ -40,8 +40,11 @@ import SQLite3
     }
     
     func removeAllIdentification(_ command: CDVInvokedUrlCommand){
-        let data  = [["label": "##REMOVEALL##", "number": "000000"]];
+        let data  = [["label": "", "number": ""]];
         runQuery(mode: "clearAll", data: data)
+        let defaults = UserDefaults(suiteName: "group.__APP_IDENTIFIER__")
+        defaults?.set(true, forKey: "clearAll")
+        defaults?.synchronize()
         
         reloadExtension(command)
     }
@@ -58,7 +61,7 @@ import SQLite3
         case "clear":
             tableName = "CallDirectoryAdd"
         case "clearAll":
-            tableName = "CallDirectoryAdd"
+            tableName = "CallDirectory"
         default:
             tableName = "CallDirectory"
         }
@@ -80,17 +83,12 @@ import SQLite3
             //creating a statement
             var stmt: OpaquePointer?
             
-            //the replace query
-            var queryString = ""
-            switch(mode) {
-                case "deleteAll":
-                    queryString = "DELETE FROM \(tableName) WHERE number = ?"
-                case "clearAll":
-                    queryString = "DELETE FROM \(tableName)"
-                case "selectAll":
-                    queryString = "SELCECT FROM \(tableName)"
-                default:
-                    queryString = "REPLACE INTO \(tableName) (number, label) VALUES (?,?)"
+            //the query
+            var queryString = "REPLACE INTO \(tableName) (number, label) VALUES (?,?)"
+            if mode == "deleteAll" {
+                queryString = "DELETE FROM \(tableName) WHERE number = ?"
+            } else if mode == "clearAll" {
+                queryString = "DELETE FROM \(tableName)"
             }
             
             //preparing the query
