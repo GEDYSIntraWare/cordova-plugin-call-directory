@@ -13,12 +13,7 @@ Global object `CallDirectory`
 ### isAvailable
 
 ```javascript
-CallDirectory.isAvailable(null, (value) => {
-          console.log("Calldirectory available", value);
-          resolve(value);
-        }, (err) => {
-          reject(err);
-        });
+CallDirectory.isAvailable(null, (value) => console.log(value), (err) => console.error(err));
 ```
 
 ### addIdentification
@@ -27,12 +22,7 @@ Make sure to not add duplicate numbers.
 ```javascript
 let indexItems = [{label: "Test", number: "001123456"}];
 
-CallDirectory.addIdentification(indexItems, (value) => {
-          console.log("Adding to call directory", value);
-          resolve(value);
-        }, (err) => {
-          reject(err);
-        });
+CallDirectory.addIdentification(indexItems, (value) => console.log(value), (err) => console.error(err));
 ```
 
 ### removeIdentification
@@ -40,36 +30,27 @@ CallDirectory.addIdentification(indexItems, (value) => {
 ```javascript
 let indexItems = [{label: "Test", number: "001123456"}];
 
-CallDirectory.removeIdentification(indexItems, (value) => {
-                            console.log("Removing from call directory", value);
-                            resolve(value);
-                          }, (err) => {
-                            reject(err);
-                          });
+CallDirectory.removeIdentification(indexItems, (value) => console.log(value), (err) => console.error(err));
 ```
 
 ### removeAllIdentification
 
 ```javascript
-CallDirectory.removeAllIdentification(null, (value) => {
-          console.log("Calldirectory remove All", value);
-          resolve(value);
-        }, (err) => {
-          console.error(err);
-          resolve(); //TODO ignore delete all error
-        });
+CallDirectory.removeAllIdentification(undefined, (value) => console.log(value), (err) => {console.error(err));
+```
+
+### getAllItems
+
+Returns an array with items: `{ label: "Test", number: "1234567890"}`
+
+```javascript
+CallDirectory.getAllItems(undefined, (value) => console.console.log(res), (err) => console.error(err))
 ```
 
 ### reloadExtension
 
 ```javascript
-CallDirectory.reloadExtension(undefined, (value) => {
-          console.log("Refresh call directory", value);
-          resolve(value);
-        }, (err) => {
-          console.error(err);
-          reject(err);
-        });
+CallDirectory.reloadExtension(undefined, (value) => console.log(value), (err) => console.error(err));
 ```
 
 ## Upcoming features

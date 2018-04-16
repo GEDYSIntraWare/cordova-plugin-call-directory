@@ -44,6 +44,8 @@ import SQLite3
         if sqlite3_exec(db, "DELETE FROM CallDirectory", nil, nil, nil) != SQLITE_OK {
             let errmsg = String(cString: sqlite3_errmsg(db)!)
             print("error dropping table: \(errmsg)")
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: errmsg);
+            self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
         }
         sqlite3_close(db);
         
@@ -53,6 +55,34 @@ import SQLite3
         defaults?.synchronize()
         
         reloadExtension(command)
+    }
+    
+    func getAllItems(_ command: CDVInvokedUrlCommand){
+        let db = openDb()
+        var items = [Any]()
+        let queryStatementString = "SELECT * FROM CallDirectory ORDER BY CAST(number AS INTEGER);"
+        var queryStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
+            while (sqlite3_step(queryStatement) == SQLITE_ROW) {
+                autoreleasepool {
+                    let queryResultCol0 = sqlite3_column_text(queryStatement, 0)
+                    let queryResultCol1 = sqlite3_column_text(queryStatement, 1)
+                    if queryResultCol0 != nil && queryResultCol1 != nil {
+                        let numberString = String(cString: queryResultCol0!)
+                        let label = String(cString: queryResultCol1!)
+                        
+                        items.append(["number": numberString, "label": label])
+                    } else {
+                        print("Row invalid")
+                    }
+                }
+            }
+            sqlite3_finalize(queryStatement)
+        }
+        sqlite3_close(db);
+        
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: items);
+        self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
     }
     
     //Helper functions

@@ -43,6 +43,16 @@ CallDirectory.prototype.removeAllIdentification = function (objects, successCall
   );
 };
 
+CallDirectory.prototype.getAllItems = function (objects, successCallback, errorCallback) {
+  cordova.exec(
+    successCallback,
+    errorCallback,
+    "CallDirectory",
+    "getAllItems",
+    [objects]
+  );
+};
+
 CallDirectory.prototype.reloadExtension = function (objects, successCallback, errorCallback) {
   cordova.exec(
     successCallback,
