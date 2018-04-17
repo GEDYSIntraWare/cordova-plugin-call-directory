@@ -86,6 +86,8 @@ module.exports = function (context) {
   var EXT_NAME = getCordovaParameter("EXT_NAME", contents);
   var EXT_BUNDLE_SUFFIX = getCordovaParameter("EXT_BUNDLE_SUFFIX", contents);
   var ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = getCordovaParameter("ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", contents);
+  var PROVISIONING_PROFILE = getCordovaParameter("PROVISIONING_PROFILE", contents);
+  var DEVELOPMENT_TEAM = getCordovaParameter("DEVELOPMENT_TEAM", contents);
 
   if (contents) {
     contents = contents.substring(contents.indexOf('<'));
@@ -358,6 +360,11 @@ module.exports = function (context) {
               if (addEntitlementsFile) {
                 buildSettingsObj['CODE_SIGN_ENTITLEMENTS'] = '"' + extName + '/' + entitlementsFileName + '"';
                 log('Added entitlements file reference to build settings!', 'info');
+              }
+              if (PROVISIONING_PROFILE && DEVELOPMENT_TEAM) {
+                buildSettingsObj['PROVISIONING_PROFILE'] = PROVISIONING_PROFILE;
+                buildSettingsObj['DEVELOPMENT_TEAM'] = DEVELOPMENT_TEAM;
+                log('Added signing identities for extension!', 'info');
               }
               if (projectContainsSwiftFiles) {
                 buildSettingsObj['SWIFT_VERSION'] = '3.0';

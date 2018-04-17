@@ -4,7 +4,7 @@
 
 ## Installation
 
-`cordova plugin add cordova-plugin-call-directory --variable EXT_NAME="Cordova-Directory" --variable ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES="NO"`
+`cordova plugin add cordova-plugin-call-directory --variable EXT_NAME="Cordova-Directory" --variable ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES="NO"  --variable DEVELOPMENT_TEAM="TEAMID" --variable PROVISIONING_PROFILE="prov-id-5677-67567567.."`
 
 ## API & Examples
 
