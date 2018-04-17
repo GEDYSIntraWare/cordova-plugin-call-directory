@@ -44,7 +44,7 @@ CallDirectory.removeAllIdentification(undefined, (value) => console.log(value), 
 Returns an array with items: `{ label: "Test", number: "1234567890"}`
 
 ```javascript
-CallDirectory.getAllItems(undefined, (value) => console.console.log(res), (err) => console.error(err))
+CallDirectory.getAllItems(undefined, (value) => console.log(value), (err) => console.error(err))
 ```
 
 ### reloadExtension
