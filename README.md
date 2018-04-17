@@ -53,12 +53,6 @@ CallDirectory.getAllItems(undefined, (value) => console.log(value), (err) => con
 CallDirectory.reloadExtension(undefined, (value) => console.log(value), (err) => console.error(err));
 ```
 
-## Upcoming features
-
-* Ionic Native support
-* Testing
-* Blocking numbers
-
 ## Error Codes
 [Apple documentation](https://developer.apple.com/documentation/callkit/cxerrorcodecalldirectorymanagererror.code)
 
