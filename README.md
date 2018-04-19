@@ -58,9 +58,9 @@ CallDirectory.reloadExtension(undefined, (value) => console.log(value), (err) =>
 
 ## Fix build problems in Xcode build settings
 
-Run path: @executable_path/../../Frameworks for extension
+Run path: `@executable_path/../../Frameworks` for extension
 
-Always embedd swift standard libraries: NO for extension
+Always embedd swift standard libraries: ``NO`` for extension
 
 ## Acknowledgements
 Thanks to [David Strausz](https://github.com/DavidStrausz) whos [plugin](https://github.com/DavidStrausz/cordova-plugin-today-widget) is the base of all hooks, which add the extension during `cordova platform add ios`
