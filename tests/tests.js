@@ -8,7 +8,7 @@ exports.defineAutoTests = function() {
     });
   });
 
-  //TODO fix for emulator
+  //TODO Test functions which require extension
   /* describe("isAvailable", function () {
     it("isAvailable schould be defined", function () {
       expect(window.CallDirectory.isAvailable).toBeDefined();
@@ -40,6 +40,25 @@ exports.defineAutoTests = function() {
       }, function(result) {
         console.log(result);
         fail("addIdentification Error");
+        done();
+      });
+    });
+  });
+
+  describe("getAllItems", function () {
+    it("getAllItems schould be defined", function () {
+      expect(window.CallDirectory.getAllItems).toBeDefined();
+    });
+
+    it("getAllItems schould return success in callback", function (done) {
+      let testData = [{label: "test", number: "1234567"}]
+      window.CallDirectory.getAllItems(testData, function (result) {
+        console.log(testData);
+        expect(result).toEqual(testData);
+        done();
+      }, function(result) {
+        console.log(result);
+        fail("getAllItems Error");
         done();
       });
     });
