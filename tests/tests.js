@@ -8,7 +8,8 @@ exports.defineAutoTests = function() {
     });
   });
 
-  describe("isAvailable", function () {
+  //TODO fix for emulator
+  /* describe("isAvailable", function () {
     it("isAvailable schould be defined", function () {
       expect(window.CallDirectory.isAvailable).toBeDefined();
     });
@@ -24,21 +25,39 @@ exports.defineAutoTests = function() {
         done();
       });
     });
-  });
+  }); */
 
   describe("addIdentification", function () {
     it("addIdentification schould be defined", function () {
       expect(window.CallDirectory.addIdentification).toBeDefined();
     });
 
-    it("addIdentification schould return an string in callback", function (done) {
+    it("addIdentification schould return success in callback", function (done) {
       let testData = [{label: "test", number: "1234567"}]
       window.CallDirectory.addIdentification(testData, function (result) {
         expect(result).toEqual("Numbers added to queue");
         done();
       }, function(result) {
-        expect(result).toBeDefined();
         console.log(result);
+        fail("addIdentification Error");
+        done();
+      });
+    });
+  });
+
+  describe("removeIdentification", function () {
+    it("removeIdentification schould be defined", function () {
+      expect(window.CallDirectory.removeIdentification).toBeDefined();
+    });
+
+    it("removeIdentification schould return success in callback", function (done) {
+      let testData = [{label: "test", number: "1234567"}]
+      window.CallDirectory.removeIdentification(testData, function (result) {
+        expect(result).toEqual("Numbers added to queue");
+        done();
+      }, function(result) {
+        console.log(result);
+        fail("removeIdentification Error");
         done();
       });
     });

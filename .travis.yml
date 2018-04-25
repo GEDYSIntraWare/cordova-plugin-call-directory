@@ -8,11 +8,6 @@ env:
   - TRAVIS_NODE_VERSION="lts/*"
 matrix:
   include:
-  - env: PLATFORM=ios-9.3
-    os: osx
-    osx_image: xcode9.2
-    language: node_js
-    node_js: lts/*
   - env: PLATFORM=ios-10.0
     os: osx
     osx_image: xcode9.2
