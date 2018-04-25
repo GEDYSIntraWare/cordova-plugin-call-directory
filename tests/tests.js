@@ -8,13 +8,13 @@ exports.defineAutoTests = function() {
     });
   });
 
-  //TODO Test functions which require extension
-  /* describe("isAvailable", function () {
+  describe("isAvailable", function () {
     it("isAvailable schould be defined", function () {
       expect(window.CallDirectory.isAvailable).toBeDefined();
     });
 
-    it("isAvailable schould return an result or error in callback", function (done) {
+    //TODO Test functions which require extension
+    /* it("isAvailable schould return an result or error in callback", function (done) {
       window.CallDirectory.isAvailable( function (result) {
         expect(result).toBeDefined()
         console.log(result);
@@ -24,8 +24,8 @@ exports.defineAutoTests = function() {
         console.log(result);
         done();
       });
-    });
-  }); */
+    }); */
+  });
 
   describe("addIdentification", function () {
     it("addIdentification schould be defined", function () {
@@ -79,6 +79,18 @@ exports.defineAutoTests = function() {
         fail("removeIdentification Error");
         done();
       });
+    });
+  });
+
+  describe("removeAllIdentification", function () {
+    it("removeAllIdentification schould be defined", function () {
+      expect(window.CallDirectory.removeAllIdentification).toBeDefined();
+    });
+  });
+  
+  describe("reloadExtension", function () {
+    it("reloadExtension schould be defined", function () {
+      expect(window.CallDirectory.reloadExtension).toBeDefined();
     });
   });
 };
