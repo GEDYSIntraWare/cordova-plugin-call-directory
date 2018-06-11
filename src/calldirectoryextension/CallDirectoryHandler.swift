@@ -10,6 +10,7 @@ import Foundation
 import CallKit
 import SQLite3
 
+@available(iOS 11.0, *)
 class CallDirectoryHandler: CXCallDirectoryProvider {
     
     override func beginRequest(with context: CXCallDirectoryExtensionContext) {
@@ -116,6 +117,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     }
 }
 
+@available(iOS 11.0, *)
 extension CallDirectoryHandler: CXCallDirectoryExtensionContextDelegate {
     
     func requestFailed(for extensionContext: CXCallDirectoryExtensionContext, withError error: Error) {

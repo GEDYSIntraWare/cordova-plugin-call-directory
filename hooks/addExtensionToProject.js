@@ -44,9 +44,9 @@ function getPreferenceValue (config, name) {
 function replacePlaceholdersInPlist(plistPath, placeHolderValues) {
     var plistContents = fs.readFileSync(plistPath, 'utf8');
     for (var i = 0; i < placeHolderValues.length; i++) {
-        var placeHolderValue = placeHolderValues[i],
-            regexp = new RegExp(placeHolderValue.placeHolder, "g");
-        plistContents = plistContents.replace(regexp, placeHolderValue.value);
+      var placeHolderValue = placeHolderValues[i],
+      regexp = new RegExp(placeHolderValue.placeHolder, "g");
+      plistContents = plistContents.replace(regexp, placeHolderValue.value);
     }
     fs.writeFileSync(plistPath, plistContents);
 }

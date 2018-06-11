@@ -1,26 +1,31 @@
 import CallKit
 import SQLite3
 
-@available(iOS 10.0, *)
 @objc(CallDirectory) class CallDirectory : CDVPlugin {
     
     func isAvailable(_ command: CDVInvokedUrlCommand){
-        CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: "__APP_IDENTIFIER__.__BUNDLE_SUFFIX__", completionHandler: { (status:CXCallDirectoryManager.EnabledStatus, e:Error?) -> Void in
-            
-            if e != nil {
-                print(e ?? "Error")
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: e.debugDescription);
-                self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
-            } else if (status == CXCallDirectoryManager.EnabledStatus.enabled) {
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: true);
-                self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
-            } else {
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: false);
-                self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
-            }
-        })
+        if #available(iOS 10.0, *) {
+            CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: "__APP_IDENTIFIER__.__BUNDLE_SUFFIX__", completionHandler: { (status:CXCallDirectoryManager.EnabledStatus, e:Error?) -> Void in
+                
+                if e != nil {
+                    print(e ?? "Error")
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: e.debugDescription);
+                    self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
+                } else if (status == CXCallDirectoryManager.EnabledStatus.enabled) {
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: true);
+                    self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
+                } else {
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: false);
+                    self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
+                }
+            })
+        } else {
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: false);
+            self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
+        }
     }
     
+    @available(iOS 10.0, *)
     func addIdentification(_ command: CDVInvokedUrlCommand){
         let data  = command.arguments[0] as! [Any];
         runQuery(mode: "add", data: data)
@@ -30,6 +35,7 @@ import SQLite3
         self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
     }
     
+    @available(iOS 10.0, *)
     func removeIdentification(_ command: CDVInvokedUrlCommand){
         let data  = command.arguments[0] as! [Any];
         runQuery(mode: "delete", data: data)
@@ -39,6 +45,7 @@ import SQLite3
         self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
     }
     
+    @available(iOS 11.0, *)
     func removeAllIdentification(_ command: CDVInvokedUrlCommand){
         let db = openDb()
         if sqlite3_exec(db, "DELETE FROM CallDirectory", nil, nil, nil) != SQLITE_OK {
@@ -57,6 +64,7 @@ import SQLite3
         reloadExtension(command)
     }
     
+    @available(iOS 11.0, *)
     func getAllItems(_ command: CDVInvokedUrlCommand){
         let db = openDb()
         var items = [Any]()
@@ -184,6 +192,7 @@ import SQLite3
         }
     }
     
+    @available(iOS 10.0, *)
     func reloadExtension(_ command: CDVInvokedUrlCommand) {
         CXCallDirectoryManager.sharedInstance.reloadExtension(withIdentifier: "__APP_IDENTIFIER__.__BUNDLE_SUFFIX__", completionHandler: { (error) -> Void in
             
