@@ -13,7 +13,9 @@ Global object `CallDirectory`
 ### isAvailable
 
 ```javascript
-CallDirectory.isAvailable(null, (value) => console.log(value), (err) => console.error(err));
+CallDirectory.isAvailable(null, 
+  (value) => console.log(value),
+  (err) => console.error(err));
 ```
 
 ### addIdentification
@@ -22,7 +24,9 @@ Make sure to not add duplicate numbers.
 ```javascript
 let indexItems = [{label: "Test", number: "001123456"}];
 
-CallDirectory.addIdentification(indexItems, (value) => console.log(value), (err) => console.error(err));
+CallDirectory.addIdentification(indexItems, 
+  (value) => console.log(value),
+  (err) => console.error(err));
 ```
 
 ### removeIdentification
@@ -30,13 +34,17 @@ CallDirectory.addIdentification(indexItems, (value) => console.log(value), (err)
 ```javascript
 let indexItems = [{label: "Test", number: "001123456"}];
 
-CallDirectory.removeIdentification(indexItems, (value) => console.log(value), (err) => console.error(err));
+CallDirectory.removeIdentification(indexItems,
+  (value) => console.log(value),
+  (err) => console.error(err));
 ```
 
 ### removeAllIdentification
 
 ```javascript
-CallDirectory.removeAllIdentification(undefined, (value) => console.log(value), (err) => {console.error(err));
+CallDirectory.removeAllIdentification(undefined,
+  (value) => console.log(value),
+  (err) => {console.error(err));
 ```
 
 ### getAllItems
@@ -44,13 +52,19 @@ CallDirectory.removeAllIdentification(undefined, (value) => console.log(value), 
 Returns an array with items: `{ label: "Test", number: "1234567890"}`
 
 ```javascript
-CallDirectory.getAllItems(undefined, (value) => console.log(value), (err) => console.error(err))
+CallDirectory.getAllItems(undefined,
+  (value) => console.log(value),
+  (err) => console.error(err))
 ```
 
 ### reloadExtension
 
+Reload the extenstion after adding or removing items.
+
 ```javascript
-CallDirectory.reloadExtension(undefined, (value) => console.log(value), (err) => console.error(err));
+CallDirectory.reloadExtension(undefined,
+  (value) => console.log(value),
+  (err) => console.error(err));
 ```
 
 ## Error Codes
@@ -63,4 +77,4 @@ Run path: `@executable_path/../../Frameworks` for extension
 Always embedd swift standard libraries: ``NO`` for extension
 
 ## Acknowledgements
-Thanks to [David Strausz](https://github.com/DavidStrausz) whos [plugin](https://github.com/DavidStrausz/cordova-plugin-today-widget) is the base of all hooks, which add the extension during `cordova platform add ios`
+Thanks to [David Strausz](https://github.com/DavidStrausz) whose [plugin](https://github.com/DavidStrausz/cordova-plugin-today-widget) is the base of all hooks, which add the extension during `cordova platform add ios`
