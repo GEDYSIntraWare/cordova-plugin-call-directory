@@ -42,7 +42,7 @@ CallDirectory.removeIdentification(indexItems,
 ### removeAllIdentification
 
 ```javascript
-CallDirectory.removeAllIdentification(undefined,
+CallDirectory.removeAllIdentification(
   (value) => console.log(value),
   (err) => {console.error(err));
 ```
@@ -52,7 +52,7 @@ CallDirectory.removeAllIdentification(undefined,
 Returns an array with items: `{ label: "Test", number: "1234567890"}`
 
 ```javascript
-CallDirectory.getAllItems(undefined,
+CallDirectory.getAllItems(
   (value) => console.log(value),
   (err) => console.error(err))
 ```
@@ -62,7 +62,7 @@ CallDirectory.getAllItems(undefined,
 Reload the extenstion after adding or removing items.
 
 ```javascript
-CallDirectory.reloadExtension(undefined,
+CallDirectory.reloadExtension(
   (value) => console.log(value),
   (err) => console.error(err));
 ```

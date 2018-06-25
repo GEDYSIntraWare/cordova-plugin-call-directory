@@ -33,33 +33,33 @@ CallDirectory.prototype.removeIdentification = function (objects, successCallbac
   );
 };
 
-CallDirectory.prototype.removeAllIdentification = function (objects, successCallback, errorCallback) {
+CallDirectory.prototype.removeAllIdentification = function (successCallback, errorCallback) {
   cordova.exec(
     successCallback,
     errorCallback,
     "CallDirectory",
     "removeAllIdentification",
-    [objects]
+    [{}]
   );
 };
 
-CallDirectory.prototype.getAllItems = function (objects, successCallback, errorCallback) {
+CallDirectory.prototype.getAllItems = function (successCallback, errorCallback) {
   cordova.exec(
     successCallback,
     errorCallback,
     "CallDirectory",
     "getAllItems",
-    [objects]
+    [{}]
   );
 };
 
-CallDirectory.prototype.reloadExtension = function (objects, successCallback, errorCallback) {
+CallDirectory.prototype.reloadExtension = function (successCallback, errorCallback) {
   cordova.exec(
     successCallback,
     errorCallback,
     "CallDirectory",
     "reloadExtension",
-    [objects]
+    [{}]
   );
 };
 
