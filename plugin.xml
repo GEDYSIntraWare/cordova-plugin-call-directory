@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-call-directory" version="1.0.1">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-call-directory" version="1.1.0">
   <name>CallDirectory</name>
   <author>GEDYS IntraWare</author>
   <description>Cordova plugin to build an iOS Call Director extension</description>
