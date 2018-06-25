@@ -13,7 +13,7 @@ Global object `CallDirectory`
 ### isAvailable
 
 ```javascript
-CallDirectory.isAvailable(null, 
+CallDirectory.isAvailable(
   (value) => console.log(value),
   (err) => console.error(err));
 ```

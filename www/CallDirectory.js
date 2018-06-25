@@ -3,13 +3,13 @@
 function CallDirectory() {
 }
 
-CallDirectory.prototype.isAvailable = function (objects, successCallback, errorCallback) {
+CallDirectory.prototype.isAvailable = function (successCallback, errorCallback) {
   cordova.exec(
     successCallback,
     errorCallback,
     "CallDirectory",
     "isAvailable",
-    [objects]
+    [{}]
   );
 };
 
