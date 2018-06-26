@@ -51,8 +51,9 @@ exports.defineAutoTests = function() {
     });
 
     it("getAllItems schould return success in callback", function (done) {
+      let testData = [{label: "test", number: "1234567"}]
       window.CallDirectory.getAllItems(function (result) {
-        console.log(testData);
+        console.log(result, testData);
         expect(result).toEqual(testData);
         done();
       }, function(result) {
