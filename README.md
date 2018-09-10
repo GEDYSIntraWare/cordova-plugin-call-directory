@@ -67,6 +67,16 @@ CallDirectory.reloadExtension(
   (err) => console.error(err));
 ```
 
+### getLog
+
+Returns an object with log entries by extension and plugin log: `{ plugin: ["Delete..."..], extension: ["1234567890"..]}`
+
+```javascript
+CallDirectory.getLog(
+  (value) => console.log(value),
+  (err) => console.error(err))
+```
+
 ## Error Codes
 [Apple documentation](https://developer.apple.com/documentation/callkit/cxerrorcodecalldirectorymanagererror.code)
 
