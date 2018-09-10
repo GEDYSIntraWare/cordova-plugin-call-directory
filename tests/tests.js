@@ -93,6 +93,24 @@ exports.defineAutoTests = function() {
       expect(window.CallDirectory.reloadExtension).toBeDefined();
     });
   });
+
+  describe("getLog", function () {
+    it("getLog schould be defined", function () {
+      expect(window.CallDirectory.getLog).toBeDefined();
+    });
+
+    it("getLog schould return success in callback", function (done) {
+      window.CallDirectory.getLog(function (result) {
+        console.log(result);
+        expect(result).toBeDefined()
+        done();
+      }, function (result) {
+        console.log(result);
+        fail("getLog Error");
+        done();
+      });
+    });
+  });
 };
 
 exports.defineManualTests = function (contentEl, createActionButton) {
