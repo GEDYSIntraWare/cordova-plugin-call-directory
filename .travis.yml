@@ -31,4 +31,6 @@ script:
 - node /tmp/paramedic/main.js --config pr/$PLATFORM --plugin $(pwd) --shouldUseSauce
   --buildName travis-plugin-call-directory-$TRAVIS_JOB_NUMBER
 notifications:
-  email: true
+  email: false
+  slack:
+    secure: dfUpHgxsiH6CgM5JOjOdGmYSaWNR5Z6yud4eXVpPGu/ovv16tOpPs+uAlRLEuHRdFqO8ZuY4BCHWdv+xR8fDuSFtY581kv+r4mFnUFn/cVCaJSr4LV9cfWrgT+2kBCQa5HOFY4FwQLhrv+uVxOkjybgJleKQgqRLHnWjL/GoM4TgSvs4LW4hIsizOwezaA1Bn5pzKbIeteVPrjilRe9LBoHSe1vZqpg4/qnNmYzPDZeYIo+57H1tZL6IMfAgtYfA/emlt0A1DDc0ZR+8KCFlruIanxJDQxqeYQM7O6FMFifUMbvlzeGBCD7+zzawBGhfwjHE/RbxTFL+5Ct61wgAfEuRvinr+0x2ETrMSJr4hT+n9E9zFgaa5wRH4lvyFKng20VQs7Gr6vCMcqm0I3T7aewu2iFtyIcXRE60eZm9AHAtNJ8ayWvC+XLw5KjbwdBTMpPa9LI5u6vtwwyAUK7w7xeLvNk7gLrwdtndYYkJrYEd1Fusz9WORNzNGTREUEkJxyQgmaTTIwV00JqC+e/rDZhprC8sRtC14oDviCRXnqG3Q9PoQWGfPOWn+jRs6RfuYKfwLEdNhxPVNVLur8XRE86HAHWe5nNeVsDiSxRv5Q8lggherIkFwcPYS4xtD9WyMg0g4C3DhNJYclXWX+4wtOCPE7HVVgb3/sX8fqR/xkk=
