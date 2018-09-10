@@ -63,4 +63,14 @@ CallDirectory.prototype.reloadExtension = function (successCallback, errorCallba
   );
 };
 
+CallDirectory.prototype.getLog = function (successCallback, errorCallback) {
+  cordova.exec(
+    successCallback,
+    errorCallback,
+    "CallDirectory",
+    "getLog",
+    [{}]
+  );
+};
+
 module.exports = new CallDirectory();
