@@ -46,7 +46,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
         runQuery(mode: "delete", data: data)
         
         self.log("Done adding numbers to CallDirectoryDelete")
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "Numbers added to queue");
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "Numbers added to delete queue");
         self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
     }
     
@@ -158,6 +158,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
         
         for item in data {
             let entry = item as? [String: Any];
+            self.log("\(mode):  \(entry!["number"]! )")
             
             //binding the parameters
             if mode == "deleteAll" {

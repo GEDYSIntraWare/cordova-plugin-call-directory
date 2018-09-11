@@ -20,6 +20,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     
     override func beginRequest(with context: CXCallDirectoryExtensionContext) {
         context.delegate = self
+        self.log("Begin request")
         
         // Check whether this is an "incremental" data request
         if context.isIncremental {
@@ -84,11 +85,11 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                                         self.log("Delete \(number!)")
                                         context.removeIdentificationEntry(withPhoneNumber: number!)
                                     } else {
-                                        self.log("Add from \(tableName), \(numberString), \(number!)")
+                                        self.log("Add \(numberString), \(number!)")
                                         context.addIdentificationEntry(withNextSequentialPhoneNumber: number!, label: label)
                                     }
                                 } else {
-                                    self.log("Invalid number \(numberString) | \(label)")
+                                    self.log("Invalid number, parse int failed: \(numberString)")
                                 }
                             } else {
                                 self.log("Row invalid")
