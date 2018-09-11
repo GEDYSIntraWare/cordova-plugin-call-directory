@@ -72,7 +72,7 @@ exports.defineAutoTests = function() {
     it("removeIdentification schould return success in callback", function (done) {
       let testData = [{label: "test", number: "1234567"}]
       window.CallDirectory.removeIdentification(testData, function (result) {
-        expect(result).toEqual("Numbers added delete queue");
+        expect(result).toEqual("Numbers added to delete queue");
         done();
       }, function(result) {
         console.log(result);
