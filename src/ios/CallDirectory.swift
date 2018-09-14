@@ -158,7 +158,6 @@ let GROUP = "group.__APP_IDENTIFIER__"
         
         for item in data {
             let entry = item as? [String: Any];
-            self.log("\(mode):  \(entry!["number"]! )")
             
             //binding the parameters
             if mode == "deleteAll" {
@@ -168,6 +167,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
                     continue
                 }
             } else {
+                
                 if sqlite3_bind_text(stmt, 1, (entry!["number"] as! NSString).utf8String, -1, nil) != SQLITE_OK{
                     let errmsg = String(cString: sqlite3_errmsg(db)!)
                     self.log("failure binding number: \(errmsg)")

@@ -82,10 +82,8 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                                 let label = String(cString: queryResultCol1!)
                                 if number != nil {
                                     if(mode == "delete") {
-                                        self.log("Delete \(number!)")
                                         context.removeIdentificationEntry(withPhoneNumber: number!)
                                     } else {
-                                        self.log("Add \(numberString), \(number!)")
                                         context.addIdentificationEntry(withNextSequentialPhoneNumber: number!, label: label)
                                     }
                                 } else {
@@ -127,6 +125,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     }
     
     private func flushLog() {
+        print(self.logEntries.count)
         self.defaults?.set(self.logEntries, forKey: "log")
         self.defaults?.synchronize()
     }
