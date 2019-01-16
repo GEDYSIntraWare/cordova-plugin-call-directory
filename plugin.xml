@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-call-directory" version="1.3.2">
   <name>CallDirectory</name>
   <author>GEDYS IntraWare</author>
-  <description>Cordova plugin to build an iOS Call Director extension</description>
+  <description>Cordova plugin to build an iOS Call Directory extension</description>
   <license>MIT</license>
   <keywords>cordova,plugin,callkit,ios,calldirectory,caller-id</keywords>
   <repo>https://github.com/GEDYSIntraWare/cordova-plugin-call-directory</repo>
