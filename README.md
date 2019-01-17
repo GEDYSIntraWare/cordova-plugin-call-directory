@@ -6,6 +6,8 @@
 
 `cordova plugin add cordova-plugin-call-directory --variable EXT_NAME="Cordova-Directory" --variable ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES="NO"  --variable DEVELOPMENT_TEAM="TEAMID" --variable PROVISIONING_PROFILE="prov-id-5677-67567567.."`
 
+If you encounter problems during installation please remove the iOS platform, add the plugin and add the iOS platform again. This plugins creates some source files and modifies config files in the Xcode project with installation hooks.
+
 ## API & Examples
 
 Global object `CallDirectory`
