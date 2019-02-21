@@ -8,6 +8,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
     var defaults = UserDefaults(suiteName: GROUP)
     var logEntries = [String]()
     
+    @objc(isAvailable:)
     func isAvailable(_ command: CDVInvokedUrlCommand){
         if #available(iOS 10.0, *) {
             CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: EXTENSION, completionHandler: { (status:CXCallDirectoryManager.EnabledStatus, e:Error?) -> Void in
@@ -31,6 +32,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
     }
     
     @available(iOS 10.0, *)
+    @objc(addIdentification:)
     func addIdentification(_ command: CDVInvokedUrlCommand){
         let data  = command.arguments[0] as! [Any];
         runQuery(mode: "add", data: data)
@@ -41,6 +43,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
     }
     
     @available(iOS 10.0, *)
+    @objc(removeIdentification:)
     func removeIdentification(_ command: CDVInvokedUrlCommand){
         let data  = command.arguments[0] as! [Any];
         runQuery(mode: "delete", data: data)
@@ -51,6 +54,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
     }
     
     @available(iOS 11.0, *)
+    @objc(removeAllIdentification:)
     func removeAllIdentification(_ command: CDVInvokedUrlCommand){
         let db = openDb()
         if sqlite3_exec(db, "DELETE FROM CallDirectory", nil, nil, nil) != SQLITE_OK {
@@ -68,6 +72,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
     }
     
     @available(iOS 11.0, *)
+    @objc(getAllItems:)
     func getAllItems(_ command: CDVInvokedUrlCommand){
         let db = openDb()
         var items = [Any]()
@@ -96,6 +101,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
         self.commandDelegate.send(pluginResult, callbackId:command.callbackId);
     }
     
+    @objc(getLog:)
     func getLog(_ command: CDVInvokedUrlCommand){
         var logResult: [AnyHashable : Any] = ["plugin" : self.logEntries]
         self.defaults?.synchronize()
@@ -105,7 +111,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
     }
     
     //Helper functions
-    func openDb() -> OpaquePointer {
+    private func openDb() -> OpaquePointer {
         let fileManager = FileManager.default
         let directory = fileManager.containerURL(forSecurityApplicationGroupIdentifier: GROUP)
         let fileURL = directory?.appendingPathComponent("CordovaCallDirectory.sqlite")
@@ -118,7 +124,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
         return db!
     }
     
-    func runQuery(mode: String, data: [Any]) {
+    private func runQuery(mode: String, data: [Any]) {
         
         var tableName = ""
         switch mode {
@@ -205,6 +211,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
     }
     
     @available(iOS 10.0, *)
+    @objc(reloadExtension:)
     func reloadExtension(_ command: CDVInvokedUrlCommand) {
         CXCallDirectoryManager.sharedInstance.reloadExtension(withIdentifier: EXTENSION, completionHandler: { (error) -> Void in
             
