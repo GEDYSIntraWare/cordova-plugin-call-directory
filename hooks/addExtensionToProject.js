@@ -367,7 +367,7 @@ module.exports = function (context) {
                 log('Added signing identities for extension!', 'info');
               }
               if (projectContainsSwiftFiles) {
-                buildSettingsObj['SWIFT_VERSION'] = '3.0';
+                buildSettingsObj['SWIFT_VERSION'] = '4.0';
                 buildSettingsObj['ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES'] = ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES || 'YES';
                 log('Added build settings for swift support!', 'info');
               }
