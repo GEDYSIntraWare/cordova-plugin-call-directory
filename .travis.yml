@@ -29,7 +29,7 @@ install:
 - npm install
 script:
 - node /tmp/paramedic/main.js --config pr/$PLATFORM --plugin $(pwd) --shouldUseSauce
-  --buildName travis-plugin-call-directory-$TRAVIS_JOB_NUMBER
+  --buildName travis-plugin-call-directory-$TRAVIS_JOB_NUMBER --args=--buildFlag='-UseModernBuildSystem=0'
 notifications:
   email: false
   slack:
