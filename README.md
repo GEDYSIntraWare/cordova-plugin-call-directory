@@ -89,4 +89,4 @@ Run path: `@executable_path/../../Frameworks` for extension
 Always embedd swift standard libraries: ``NO`` for extension
 
 ## Acknowledgements
-Thanks to [David Strausz](https://github.com/DavidStrausz) whose [plugin](https://github.com/DavidStrausz/cordova-plugin-today-widget) is the base of all hooks, which add the extension during `cordova platform add ios`
+Thanks to [@David Strausz](https://github.com/DavidStrausz) whose [plugin](https://github.com/DavidStrausz/cordova-plugin-today-widget) is the base of all hooks, which add the extension during `cordova platform add ios`
