@@ -32,9 +32,11 @@
   "homepage": "https://github.com/GEDYSIntraWare/cordova-plugin-call-directory#readme",
   "dependencies": {
     "cordova-plugin-add-swift-support": "^1.7.1",
+    "elementtree": "^0.1.7",
     "file-system": "^2.2.2",
     "path": "^0.12.7",
     "plist": "^2.1.0",
+    "q": "^1.5.1",
     "xcode": "git+https://github.com/apache/cordova-node-xcode.git"
   },
   "devDependencies": {

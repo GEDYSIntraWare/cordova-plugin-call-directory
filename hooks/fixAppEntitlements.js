@@ -56,7 +56,7 @@ log(
 );
 
 module.exports = function (context) {
-  var Q = context.requireCordovaModule('q');
+  var Q = require('q');
   var deferral = new Q.defer();
 
   if (context.opts.cordova.platforms.indexOf('ios') < 0) {
@@ -73,7 +73,7 @@ module.exports = function (context) {
   }
 
   // Get the bundle-id from config.xml
-  var elementTree = context.requireCordovaModule('elementtree');
+  var elementTree = require('elementtree');
   var etree = elementTree.parse(contents);
   var bundleId = etree.getroot().get('id');
 
