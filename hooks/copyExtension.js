@@ -94,7 +94,7 @@ function getCordovaParameter(variableName, contents) {
 }
 
 module.exports = function(context) {
-  var Q = context.requireCordovaModule('q');
+  var Q = require('q');
   var deferral = new Q.defer();
 
   var contents = fs.readFileSync(
