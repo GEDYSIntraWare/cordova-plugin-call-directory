@@ -46,7 +46,8 @@
     "jasmine": "^2.8.0"
   },
   "scripts": {
-    "test": "./node_modules/cordova-paramedic/main.js --plugin . --platform",
+    "test": "npm run eslint",
+    "eslint": "npx eslint www",
     "plugin-version": "cordova-plugin-xml setVersion"
   }
 }
