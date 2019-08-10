@@ -22,8 +22,6 @@ _ios: &_ios
 matrix:
   include:
     # local tests, without saucelabs
-    - env: PLATFORM=local/ios-10.0
-      <<: *_ios
 
     # many tests with saucelabs
 
