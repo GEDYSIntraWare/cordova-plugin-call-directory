@@ -1,35 +1,77 @@
+# This Travis configuration file is built after a Cordova Paramedic 
+# specific template with minimal modifications and adaptations:
+# https://github.com/apache/cordova-paramedic/blob/master/.travis.yml
+
 sudo: false
 addons:
   jwt:
     secure: KkinWHCqwC6xJBCjbHwCkcKjz5WKxdY72I5SA7vKdek8mfV7pvFtlTdv+uztxM3igfRzdUBkVG2xfCbnhWPB0sg+A+fQAHBjVcOljm4LcrYoKXJ5zsXfPHomABSdH4ZObqjxtePt36EWC8Ex2Kp9EiUrcSWK8zbNYzskHtcB59Rr0LC9KGphcJdyXF8P63mzwpNfcvR9dtV4nzVsv8AFWOY6/wlW4eqtKEnLxioymXnZ3uoqKHvwWsStx26w26p8DOGfJTP8gxgZamzGSYoGA2wjQR810u0D9d07e+XM5vrXOlil22g58Ynq1fWtP4IbA+s89a2G6kTLJPpnMWALRS+E6tsj/meirq7hfu4QmwOSd6PR7Df81ChmfMJxfL4SRTyCYwYw5rYmdy614SGcAtXh9b0Laptwu9NGCAJRydk+w1odpdzizwQS6oaiNtBrIHIWKALZ2sCcztdaa6T0+3YTTuYWxZWEDvl+wbHtKvC7+RWoqaKExyywo4uRQW4Zowv4sYRJTcwwGa+3/OmMlGhTNbt2PFj8MhhoQkGVlfy136YNTh9jrEEMPHuXCyhcCvYK5hGVA5mweITKvE2KMwAll1VR9rOTuxfpEIhdsh1CJFTePjYBBu00So1FKN/TIZn1flhLC6kKZbamgThmS6zWCl5Os6bG+sFdRK1Vhqw=
 env:
   global:
-  - SAUCE_USERNAME=NiklasMerz
-  - TRAVIS_NODE_VERSION="lts/*"
+    - SAUCE_USERNAME=NiklasMerz
+    - TRAVIS_NODE_VERSION=8
+language: node_js
+node_js: 8
+
+# yaml anchor/alias: https://medium.com/@tommyvn/travis-yml-dry-with-anchors-8b6a3ac1b027
+
+_ios: &_ios
+  os: osx
+  osx_image: xcode10.2
+
 matrix:
   include:
-  - env: PLATFORM=ios-10.0
-    os: osx
-    osx_image: xcode9.2
-    language: node_js
-    node_js: lts/*
+    # local tests, without saucelabs
+
+    # many tests with saucelabs
+
+    - env: PLATFORM=ios-11.3
+      <<: *_ios
+    - env: PLATFORM=ios-12.0
+      <<: *_ios
+
 before_install:
-- rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm
-  && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm
-  install $TRAVIS_NODE_VERSION
-- node --version
-- if [[ "$PLATFORM" =~ android ]]; then gradle --version; fi
-- if [[ "$PLATFORM" =~ ios ]]; then npm install -g ios-deploy; fi
-- if [[ "$PLATFORM" =~ android ]]; then echo y | android update sdk -u --filter android-25,android-26;
-  fi
-- git clone https://github.com/apache/cordova-paramedic /tmp/paramedic && pushd /tmp/paramedic
-  && npm install && popd
-- npm install -g cordova@7.0.1
+  # manually install Node for `language: android`
+  - if [[ "$PLATFORM" =~ android ]]; then nvm install $TRAVIS_NODE_VERSION; fi 
+  - node --version
+  - if [[ "$PLATFORM" =~ android ]]; then gradle --version; fi
+  - if [[ "$PLATFORM" =~ ios ]]; then npm install -g ios-deploy; fi
+  - npm install -g cordova
+  # install paramedic if not running on paramedic repo
+  - if ! [[ "$TRAVIS_REPO_SLUG" =~ cordova-paramedic ]]; then npm install -g github:apache/cordova-paramedic; fi 
+
 install:
-- npm install
+  - npm install
+
+before_script:
+  - |
+    if [[ "$TRAVIS_REPO_SLUG" =~ cordova-paramedic ]]; then 
+      # when used in the cordova-paramedic repo
+      TEST_COMMAND="npm run eslint"
+      PARAMEDIC_PLUGIN_TO_TEST="./spec/testable-plugin/"
+      PARAMEDIC_COMMAND="node main.js"
+    else 
+      # when used in any other (plugin) repo
+      TEST_COMMAND="npm test"
+      PARAMEDIC_PLUGIN_TO_TEST=$(pwd)
+      PARAMEDIC_COMMAND="cordova-paramedic"
+    fi
+  - PARAMEDIC_BUILDNAME=travis-$TRAVIS_REPO_SLUG-$TRAVIS_JOB_NUMBER
+  - |
+    echo "Variables now are set to:"
+    echo "TEST_COMMAND=$TEST_COMMAND"
+    echo "ADDITIONAL_TESTS=$ADDITIONAL_TESTS"
+    echo "PARAMEDIC_COMMAND=$PARAMEDIC_COMMAND"
+    echo "PLATFORM=$PLATFORM"
+    echo "PARAMEDIC_PLUGIN_TO_TEST=$PARAMEDIC_PLUGIN_TO_TEST"
+    echo "PARAMEDIC_BUILDNAME=$PARAMEDIC_BUILDNAME"
 script:
-- node /tmp/paramedic/main.js --config pr/$PLATFORM --plugin $(pwd) --shouldUseSauce
-  --buildName travis-plugin-call-directory-$TRAVIS_JOB_NUMBER --args=--buildFlag='-UseModernBuildSystem=0'
+  - $TEST_COMMAND
+  - if [[ "$ADDITIONAL_TESTS_DIR" != "" ]]; then
+      cd $ADDITIONAL_TESTS_DIR && npm install && npm test;
+    else 
+      $PARAMEDIC_COMMAND --config ./pr/$PLATFORM --plugin $PARAMEDIC_PLUGIN_TO_TEST --buildName $PARAMEDIC_BUILDNAME; 
+    fi
 notifications:
   email: false
   slack:

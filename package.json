@@ -25,7 +25,7 @@
     "cordova-ios",
     "ios"
   ],
-  "author": "GEDYS IntraWare",
+  "author": "GEDYS IntraWare GmbH",
   "bugs": {
     "url": "https://github.com/GEDYSIntraWare/cordova-plugin-call-directory/issues"
   },
@@ -46,7 +46,14 @@
     "jasmine": "^2.8.0"
   },
   "scripts": {
-    "test": "./node_modules/cordova-paramedic/main.js --plugin . --platform",
+    "test": "npm run eslint",
+    "eslint": "npx eslint www",
+    "test-travis": "npm run test-ios",
+    "test-local": "npm run test-browser && npm run test-android && npm run test-ios",
+    "test-ios": "npx cordova-paramedic --platform ios --plugin  $(pwd) --verbose",
+    "test-browser": "npx cordova-paramedic --platform browser --plugin  $(pwd)",
+    "test-saucelabs": "npm run test-saucelabs-ios && npm run test-saucelabs-android",
+    "test-saucelabs-ios": "npx cordova-paramedic --config ./pr/ios-10.0 --plugin  $(pwd) --shouldUseSauce",
     "plugin-version": "cordova-plugin-xml setVersion"
   }
 }
