@@ -37,7 +37,7 @@
     "path": "^0.12.7",
     "plist": "^2.1.0",
     "q": "^1.5.1",
-    "xcode": "git+https://github.com/apache/cordova-node-xcode.git"
+    "xcode": "git+https://github.com/GEDYSIntraWare/cordova-node-xcode.git"
   },
   "devDependencies": {
     "cordova-paramedic": "git+https://github.com/apache/cordova-paramedic.git",
