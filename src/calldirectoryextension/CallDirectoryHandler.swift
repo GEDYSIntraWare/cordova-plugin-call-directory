@@ -62,7 +62,9 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
             if sqlite3_open(fileURL.path, &db) != SQLITE_OK {
                 self.log("error opening database")
             } else {
-                var queryStatementString = "SELECT * FROM \(TABLENAME) WHERE ? ORDER BY CAST(number AS INTEGER) "
+                let lastRun = self.defaults?.double(forKey: "lastRun") ?? 0;
+                let currentTime = Date().timeIntervalSince1970
+                var queryStatementString = "SELECT * FROM \(TABLENAME) WHERE (updated > ? OR added > ?) ORDER BY CAST(number AS INTEGER) "
                 if mode == "addAll" {
                     queryStatementString = "SELECT * FROM \(TABLENAME) ORDER BY CAST(number AS INTEGER)"
                 }
@@ -73,8 +75,12 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                 var count = 0;
                 if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
                     if mode != "addAll" {
-                        let unixTime = Date().timeIntervalSince1970
-                        if sqlite3_bind_double(queryStatement, 1, unixTime) != SQLITE_OK{
+                        if sqlite3_bind_double(queryStatement, 1, lastRun) != SQLITE_OK{
+                            let errmsg = String(cString: sqlite3_errmsg(db)!)
+                            self.log("failure binding where: \(errmsg)")
+                        }
+                        
+                        if sqlite3_bind_double(queryStatement, 2, lastRun) != SQLITE_OK{
                             let errmsg = String(cString: sqlite3_errmsg(db)!)
                             self.log("failure binding where: \(errmsg)")
                         }
@@ -96,12 +102,12 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                                     delete = String(cString: queryResultCol4!) == "true"
                                 }
                                 if number != nil {
-                                    print("Got entry", label, delete, updated)
+                                    print("Entry found", label, delete, updated)
                                     
-                                    if(mode == "delete") {
-                                        //context.removeIdentificationEntry(withPhoneNumber: number!)
+                                    if(delete) {
+                                        context.removeIdentificationEntry(withPhoneNumber: number!)
                                     } else {
-                                        //context.addIdentificationEntry(withNextSequentialPhoneNumber: number!, label: label)
+                                        context.addIdentificationEntry(withNextSequentialPhoneNumber: number!, label: label)
                                     }
                                 } else {
                                     self.log("Invalid number, parse int failed: \(numberString)")
@@ -114,15 +120,47 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                         }
                     }
                     sqlite3_finalize(queryStatement)
-                    print("Processed", count, "in", TABLENAME)
+                    self.log("Processed \(count) in \(TABLENAME)");
                     
-                    //clear table
-                    if (mode != "addAll") {
-                        //if sqlite3_exec(db, "DELETE FROM \(TABLENAME)", nil, nil, nil) != SQLITE_OK {
-                        //    let errmsg = String(cString: sqlite3_errmsg(db)!)
-                        //    self.log("error deleting from table \(errmsg)")
-                        //}
+                    //Set updated
+                    var stmt: OpaquePointer?
+                    let queryString = "UPDATE \(TABLENAME) SET updated = ? WHERE (updated > ? OR added > ?)"
+                    if sqlite3_prepare_v2(db, queryString, -1, &stmt, nil) != SQLITE_OK{
+                        let errmsg = String(cString: sqlite3_errmsg(db)!)
+                        self.log("error preparing update: \(errmsg)")
+                        return
                     }
+                    
+                    if sqlite3_bind_double(stmt, 1, currentTime) != SQLITE_OK{
+                        let errmsg = String(cString: sqlite3_errmsg(db)!)
+                        self.log("failure binding added timestamp: \(errmsg)")
+                    }
+                    
+                    if sqlite3_bind_double(stmt, 2, lastRun) != SQLITE_OK{
+                        let errmsg = String(cString: sqlite3_errmsg(db)!)
+                        self.log("failure binding added timestamp: \(errmsg)")
+                    }
+                    
+                    if sqlite3_bind_double(stmt, 3, lastRun) != SQLITE_OK{
+                        let errmsg = String(cString: sqlite3_errmsg(db)!)
+                        self.log("failure binding added timestamp: \(errmsg)")
+                    }
+                    
+                    if  sqlite3_step(stmt) != SQLITE_DONE {
+                        let errmsg = String(cString: sqlite3_errmsg(db)!)
+                        self.log("statement failed: \(errmsg)")
+                    }
+                    sqlite3_finalize(stmt);
+                    self.log("Timestamp updated to \(currentTime)")
+                    
+                    self.defaults?.set(currentTime, forKey: "lastRun")
+                    self.defaults?.synchronize()
+                    
+                    // TODO Remove deleted
+                    //if sqlite3_exec(db, "DELETE FROM \(TABLENAME) WHERE deleted = true", nil, nil, nil) != SQLITE_OK {
+                    //    let errmsg = String(cString: sqlite3_errmsg(db)!)
+                    //    self.log("error deleting from table \(errmsg)")
+                    //}
                 } else {
                     let errmsg = String(cString: sqlite3_errmsg(db)!)
                     self.log("SELECT statement could not be prepared: \(errmsg)")
