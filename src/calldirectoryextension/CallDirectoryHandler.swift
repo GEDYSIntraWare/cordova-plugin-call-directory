@@ -11,6 +11,7 @@ import CallKit
 import SQLite3
 
 let GROUP = "group.__APP_IDENTIFIER__"
+let TABLENAME = "CallDirectoryNumbers"
 
 
 @available(iOS 11.0, *)
@@ -53,13 +54,6 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     
     //Helper function
     func handleNumbers(to context: CXCallDirectoryExtensionContext, mode: String) {
-        var tableName: String = "CallDirectoryAdd"
-        if(mode == "addAll") {
-            tableName = "CallDirectory"
-        } else if(mode == "delete") {
-            tableName = "CallDirectoryDelete"
-        }
-        
         let fileManager = FileManager.default
         if let directory = fileManager.containerURL(forSecurityApplicationGroupIdentifier: GROUP) {
             let fileURL = directory.appendingPathComponent("CordovaCallDirectory.sqlite")
@@ -68,43 +62,70 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
             if sqlite3_open(fileURL.path, &db) != SQLITE_OK {
                 self.log("error opening database")
             } else {
-                self.log("Query \(tableName)")
-                let queryStatementString = "SELECT * FROM \(tableName) ORDER BY CAST(number AS INTEGER);"
+                var queryStatementString = "SELECT * FROM \(TABLENAME) WHERE ? ORDER BY CAST(number AS INTEGER) "
+                if mode == "addAll" {
+                    queryStatementString = "SELECT * FROM \(TABLENAME) ORDER BY CAST(number AS INTEGER)"
+                }
+                
+                
                 var queryStatement: OpaquePointer? = nil
+                self.log("Query \(queryStatementString)")
+                var count = 0;
                 if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
+                    if mode != "addAll" {
+                        let unixTime = Date().timeIntervalSince1970
+                        if sqlite3_bind_double(queryStatement, 1, unixTime) != SQLITE_OK{
+                            let errmsg = String(cString: sqlite3_errmsg(db)!)
+                            self.log("failure binding where: \(errmsg)")
+                        }
+                    }
+                    
                     while (sqlite3_step(queryStatement) == SQLITE_ROW) {
                         autoreleasepool {
                             let queryResultCol0 = sqlite3_column_text(queryStatement, 0)
                             let queryResultCol1 = sqlite3_column_text(queryStatement, 1)
+                            let queryResultCol3 = sqlite3_column_double(queryStatement, 3)
+                            let queryResultCol4 = sqlite3_column_text(queryStatement, 4)
                             if queryResultCol0 != nil && queryResultCol1 != nil {
                                 let numberString = String(cString: queryResultCol0!)
                                 let number = Int64(numberString);
                                 let label = String(cString: queryResultCol1!)
+                                let updated = queryResultCol3
+                                var delete = false;
+                                if queryResultCol4 != nil {
+                                    delete = String(cString: queryResultCol4!) == "true"
+                                }
                                 if number != nil {
+                                    print("Got entry", label, delete, updated)
+                                    
                                     if(mode == "delete") {
-                                        context.removeIdentificationEntry(withPhoneNumber: number!)
+                                        //context.removeIdentificationEntry(withPhoneNumber: number!)
                                     } else {
-                                        context.addIdentificationEntry(withNextSequentialPhoneNumber: number!, label: label)
+                                        //context.addIdentificationEntry(withNextSequentialPhoneNumber: number!, label: label)
                                     }
                                 } else {
                                     self.log("Invalid number, parse int failed: \(numberString)")
                                 }
+                                
+                                count += 1
                             } else {
                                 self.log("Row invalid")
                             }
                         }
                     }
                     sqlite3_finalize(queryStatement)
+                    print("Processed", count, "in", TABLENAME)
                     
                     //clear table
                     if (mode != "addAll") {
-                        if sqlite3_exec(db, "DELETE FROM \(tableName)", nil, nil, nil) != SQLITE_OK {
-                            let errmsg = String(cString: sqlite3_errmsg(db)!)
-                            self.log("error deleting from table \(errmsg)")
-                        }
+                        //if sqlite3_exec(db, "DELETE FROM \(TABLENAME)", nil, nil, nil) != SQLITE_OK {
+                        //    let errmsg = String(cString: sqlite3_errmsg(db)!)
+                        //    self.log("error deleting from table \(errmsg)")
+                        //}
                     }
                 } else {
-                    self.log("SELECT statement could not be prepared")
+                    let errmsg = String(cString: sqlite3_errmsg(db)!)
+                    self.log("SELECT statement could not be prepared: \(errmsg)")
                 }
             }
         }
@@ -115,8 +136,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     }
     
     private func addOrRemoveIncrementalIdentificationPhoneNumbers(to context: CXCallDirectoryExtensionContext) {
-        handleNumbers(to: context, mode: "delete")
-        handleNumbers(to: context, mode: "add")
+        handleNumbers(to: context, mode: "update")
     }
     
     private func log(_ message: String) {

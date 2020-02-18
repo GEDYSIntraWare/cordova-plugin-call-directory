@@ -3,6 +3,7 @@ import SQLite3
 
 let EXTENSION = "__APP_IDENTIFIER__.__BUNDLE_SUFFIX__"
 let GROUP = "group.__APP_IDENTIFIER__"
+let TABLENAME = "CallDirectoryNumbers"
 
 @objc(CallDirectory) class CallDirectory : CDVPlugin {
     var defaults = UserDefaults(suiteName: GROUP)
@@ -76,18 +77,25 @@ let GROUP = "group.__APP_IDENTIFIER__"
     func getAllItems(_ command: CDVInvokedUrlCommand){
         let db = openDb()
         var items = [Any]()
-        let queryStatementString = "SELECT * FROM CallDirectory ORDER BY CAST(number AS INTEGER);"
+        let queryStatementString = "SELECT * FROM \(TABLENAME) ORDER BY CAST(number AS INTEGER);"
         var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
             while (sqlite3_step(queryStatement) == SQLITE_ROW) {
                 autoreleasepool {
                     let queryResultCol0 = sqlite3_column_text(queryStatement, 0)
                     let queryResultCol1 = sqlite3_column_text(queryStatement, 1)
+                    let queryResultCol2 = sqlite3_column_double(queryStatement, 2)
+                    let queryResultCol3 = sqlite3_column_double(queryStatement, 3)
+                    let queryResultCol4 = sqlite3_column_text(queryStatement, 4)
                     if queryResultCol0 != nil && queryResultCol1 != nil {
                         let numberString = String(cString: queryResultCol0!)
                         let label = String(cString: queryResultCol1!)
+                        var delete = false
+                        if queryResultCol4 != nil {
+                            delete = String(cString: queryResultCol4!) == "true"
+                        }
                         
-                        items.append(["number": numberString, "label": label])
+                        items.append(["number": numberString, "label": label, "added": queryResultCol2, "updated": queryResultCol3, "delete": delete])
                     } else {
                         self.log("Row invalid")
                     }
@@ -125,19 +133,8 @@ let GROUP = "group.__APP_IDENTIFIER__"
     }
     
     private func runQuery(mode: String, data: [Any]) {
-        
-        var tableName = ""
-        switch mode {
-        case "add":
-            tableName = "CallDirectoryAdd"
-        case "delete":
-            tableName = "CallDirectoryDelete"
-        default:
-            tableName = "CallDirectory"
-        }
-        
         let db = openDb()
-        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS \(tableName) (number TEXT PRIMARY KEY, label TEXT)", nil, nil, nil) != SQLITE_OK {
+        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS \(TABLENAME) (number TEXT PRIMARY KEY, label TEXT, added NUMERIC, updated NUMERIC, remove TEXT)", nil, nil, nil) != SQLITE_OK {
             let errmsg = String(cString: sqlite3_errmsg(db)!)
             self.log("error creating table: \(errmsg)")
         }
@@ -146,9 +143,9 @@ let GROUP = "group.__APP_IDENTIFIER__"
         var stmt: OpaquePointer?
         
         //the query
-        var queryString = "REPLACE INTO \(tableName) (number, label) VALUES (?,?)"
-        if mode == "deleteAll" {
-            queryString = "DELETE FROM \(tableName) WHERE number = ?"
+        var queryString = "REPLACE INTO \(TABLENAME) (number, label, added) VALUES (?,?,?)"
+        if mode == "deleteAll" || mode == "delete" {
+            queryString = "UPDATE \(TABLENAME) SET remove = true WHERE number = ?"
         }
         
         //preparing the query
@@ -166,7 +163,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
             let entry = item as? [String: Any];
             
             //binding the parameters
-            if mode == "deleteAll" {
+            if mode == "deleteAll" || mode == "delete" {
                 if sqlite3_bind_text(stmt, 1, (entry!["number"] as! NSString).utf8String, -1, nil) != SQLITE_OK{
                     let errmsg = String(cString: sqlite3_errmsg(db)!)
                     self.log("failure binding where: \(errmsg)")
@@ -185,6 +182,13 @@ let GROUP = "group.__APP_IDENTIFIER__"
                     self.log("failure binding label: \(errmsg)")
                     continue
                 }
+                
+                let unixTime = Date().timeIntervalSince1970
+                if sqlite3_bind_double(stmt, 3, unixTime) != SQLITE_OK{
+                    let errmsg = String(cString: sqlite3_errmsg(db)!)
+                    self.log("failure binding added timestamp: \(errmsg)")
+                    continue
+                }
             }
             
             //executing the query
@@ -200,7 +204,7 @@ let GROUP = "group.__APP_IDENTIFIER__"
             let errmsg = String(cString: sqlite3_errmsg(db)!)
             self.log("commit failed: \(errmsg)")
         }
-        self.log("PhoneNumbers processed in \(tableName)")
+        self.log("PhoneNumbers processed in \(TABLENAME)")
         sqlite3_finalize(stmt)
         sqlite3_close(db);
         
