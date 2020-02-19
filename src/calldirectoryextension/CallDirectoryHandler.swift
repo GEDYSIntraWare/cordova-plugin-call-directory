@@ -22,6 +22,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
     override func beginRequest(with context: CXCallDirectoryExtensionContext) {
         context.delegate = self
         self.log("Begin request")
+        self.defaults?.synchronize()
         
         // Check whether this is an "incremental" data request
         if context.isIncremental {
@@ -99,13 +100,13 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                                 let updated = queryResultCol3
                                 var delete = false;
                                 if queryResultCol4 != nil {
-                                    print(String(cString: queryResultCol4!))
                                     delete = String(cString: queryResultCol4!) == "true"
                                 }
                                 if number != nil {
                                     print("Entry found", label, delete, updated, numberString)
                                     
-                                    if(delete) {
+                                    if delete {
+                                        self.log("Delete \(numberString)")
                                         context.removeIdentificationEntry(withPhoneNumber: number!)
                                     } else {
                                         context.addIdentificationEntry(withNextSequentialPhoneNumber: number!, label: label)
@@ -125,7 +126,7 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                     
                     //Set updated
                     var stmt: OpaquePointer?
-                    let queryString = "UPDATE \(TABLENAME) SET updated = ? WHERE (updated > ? OR added > ?)"
+                    var queryString = "UPDATE \(TABLENAME) SET updated = ? WHERE (updated > ? OR added > ?)"
                     if sqlite3_prepare_v2(db, queryString, -1, &stmt, nil) != SQLITE_OK{
                         let errmsg = String(cString: sqlite3_errmsg(db)!)
                         self.log("error preparing update: \(errmsg)")
@@ -151,17 +152,25 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                         let errmsg = String(cString: sqlite3_errmsg(db)!)
                         self.log("statement failed: \(errmsg)")
                     }
-                    sqlite3_finalize(stmt);
+                    sqlite3_reset(stmt);
                     self.log("Timestamp updated to \(currentTime)")
                     
                     self.defaults?.set(currentTime, forKey: "lastRun")
                     self.defaults?.synchronize()
                     
                     // Remove deleted
-                    if sqlite3_exec(db, "DELETE FROM \(TABLENAME) WHERE remove = 'true'", nil, nil, nil) != SQLITE_OK {
+                    queryString = "DELETE FROM \(TABLENAME) WHERE remove = 'true';"
+                    if sqlite3_prepare_v2(db, queryString, -1, &stmt, nil) != SQLITE_OK{
                         let errmsg = String(cString: sqlite3_errmsg(db)!)
                         self.log("error deleting from table \(errmsg)")
                     }
+                    
+                    if  sqlite3_step(stmt) != SQLITE_DONE {
+                        let errmsg = String(cString: sqlite3_errmsg(db)!)
+                        self.log("statement failed: \(errmsg)")
+                    }
+                    
+                    sqlite3_finalize(stmt)
                 } else {
                     let errmsg = String(cString: sqlite3_errmsg(db)!)
                     self.log("SELECT statement could not be prepared: \(errmsg)")
