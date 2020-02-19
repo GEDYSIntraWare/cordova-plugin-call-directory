@@ -141,8 +141,8 @@ let TABLENAME = "CallDirectoryNumbers"
         var stmt: OpaquePointer?
 
         //the query
-        var queryString = "REPLACE INTO \(TABLENAME) (number, label, added) VALUES (?,?,?)"
-        if mode == "deleteAll" || mode == "delete" {
+        var queryString = "INSERT INTO \(TABLENAME) (number, label, added) VALUES (?,?,?)"
+        if mode == "delete" {
             queryString = "UPDATE \(TABLENAME) SET remove = 'true', updated = ? WHERE number = ?"
         }
 
@@ -161,11 +161,13 @@ let TABLENAME = "CallDirectoryNumbers"
             let entry = item as? [String: Any];
 
             //binding the parameters
-            if mode == "deleteAll" || mode == "delete" {
+            if mode == "delete" {
+                print("Delete", (entry!["label"] as! NSString), (entry!["number"] as! NSString))
+                
                 let unixTime = Date().timeIntervalSince1970
                 if sqlite3_bind_double(stmt, 1, unixTime) != SQLITE_OK{
                     let errmsg = String(cString: sqlite3_errmsg(db)!)
-                    self.log("failure binding added timestamp: \(errmsg)")
+                    self.log("failure binding updated timestamp: \(errmsg)")
                     continue
                 }
 
@@ -175,6 +177,7 @@ let TABLENAME = "CallDirectoryNumbers"
                     continue
                 }
             } else {
+                print("Insert", (entry!["label"] as! NSString), (entry!["number"] as! NSString))
                 if sqlite3_bind_text(stmt, 1, (entry!["number"] as! NSString).utf8String, -1, nil) != SQLITE_OK{
                     let errmsg = String(cString: sqlite3_errmsg(db)!)
                     self.log("failure binding number: \(errmsg)")
@@ -211,11 +214,6 @@ let TABLENAME = "CallDirectoryNumbers"
         self.log("PhoneNumbers processed in \(TABLENAME)")
         sqlite3_finalize(stmt)
         sqlite3_close(db);
-
-        //Repeat for all table
-        if mode.range(of:"All") == nil {
-            runQuery(mode: mode + "All", data: data)
-        }
     }
 
     @available(iOS 10.0, *)

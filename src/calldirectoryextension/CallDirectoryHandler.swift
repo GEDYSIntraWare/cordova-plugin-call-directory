@@ -99,10 +99,11 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                                 let updated = queryResultCol3
                                 var delete = false;
                                 if queryResultCol4 != nil {
+                                    print(String(cString: queryResultCol4!))
                                     delete = String(cString: queryResultCol4!) == "true"
                                 }
                                 if number != nil {
-                                    print("Entry found", label, delete, updated)
+                                    print("Entry found", label, delete, updated, numberString)
                                     
                                     if(delete) {
                                         context.removeIdentificationEntry(withPhoneNumber: number!)
@@ -156,11 +157,11 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                     self.defaults?.set(currentTime, forKey: "lastRun")
                     self.defaults?.synchronize()
                     
-                    // TODO Remove deleted
-                    //if sqlite3_exec(db, "DELETE FROM \(TABLENAME) WHERE deleted = true", nil, nil, nil) != SQLITE_OK {
-                    //    let errmsg = String(cString: sqlite3_errmsg(db)!)
-                    //    self.log("error deleting from table \(errmsg)")
-                    //}
+                    // Remove deleted
+                    if sqlite3_exec(db, "DELETE FROM \(TABLENAME) WHERE remove = 'true'", nil, nil, nil) != SQLITE_OK {
+                        let errmsg = String(cString: sqlite3_errmsg(db)!)
+                        self.log("error deleting from table \(errmsg)")
+                    }
                 } else {
                     let errmsg = String(cString: sqlite3_errmsg(db)!)
                     self.log("SELECT statement could not be prepared: \(errmsg)")
