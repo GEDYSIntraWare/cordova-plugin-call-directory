@@ -132,7 +132,7 @@ let TABLENAME = "CallDirectoryNumbers"
 
     private func runQuery(mode: String, data: [Any]) {
         let db = openDb()
-        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS \(TABLENAME) (number TEXT PRIMARY KEY, label TEXT, added NUMERIC, updated NUMERIC, remove TEXT)", nil, nil, nil) != SQLITE_OK {
+        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS \(TABLENAME) (number TEXT, label TEXT, added NUMERIC, updated NUMERIC, remove TEXT)", nil, nil, nil) != SQLITE_OK {
             let errmsg = String(cString: sqlite3_errmsg(db)!)
             self.log("error creating table: \(errmsg)")
         }
