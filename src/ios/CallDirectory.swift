@@ -162,7 +162,7 @@ let TABLENAME = "CallDirectoryNumbers"
 
             //binding the parameters
             if mode == "delete" {
-                print("Delete", (entry!["label"] as! NSString), (entry!["number"] as! NSString))
+                self.log("Delete \((entry!["number"] as! NSString))")
                 
                 let unixTime = Date().timeIntervalSince1970
                 if sqlite3_bind_double(stmt, 1, unixTime) != SQLITE_OK{
@@ -177,7 +177,6 @@ let TABLENAME = "CallDirectoryNumbers"
                     continue
                 }
             } else {
-                print("Insert", (entry!["label"] as! NSString), (entry!["number"] as! NSString))
                 if sqlite3_bind_text(stmt, 1, (entry!["number"] as! NSString).utf8String, -1, nil) != SQLITE_OK{
                     let errmsg = String(cString: sqlite3_errmsg(db)!)
                     self.log("failure binding number: \(errmsg)")

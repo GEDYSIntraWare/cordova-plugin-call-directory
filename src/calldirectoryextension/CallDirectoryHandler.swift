@@ -91,20 +91,17 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                         autoreleasepool {
                             let queryResultCol0 = sqlite3_column_text(queryStatement, 0)
                             let queryResultCol1 = sqlite3_column_text(queryStatement, 1)
-                            let queryResultCol3 = sqlite3_column_double(queryStatement, 3)
+                            // Updated let queryResultCol3 = sqlite3_column_double(queryStatement, 3)
                             let queryResultCol4 = sqlite3_column_text(queryStatement, 4)
                             if queryResultCol0 != nil && queryResultCol1 != nil {
                                 let numberString = String(cString: queryResultCol0!)
                                 let number = Int64(numberString);
                                 let label = String(cString: queryResultCol1!)
-                                let updated = queryResultCol3
                                 var delete = false;
                                 if queryResultCol4 != nil {
                                     delete = String(cString: queryResultCol4!) == "true"
                                 }
                                 if number != nil {
-                                    print("Entry found", label, delete, updated, numberString)
-                                    
                                     if delete {
                                         self.log("Delete \(numberString)")
                                         context.removeIdentificationEntry(withPhoneNumber: number!)
