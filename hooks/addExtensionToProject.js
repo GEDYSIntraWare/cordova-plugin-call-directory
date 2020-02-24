@@ -152,7 +152,7 @@ module.exports = function (context) {
         },
         {
           placeHolder: '__APP_IDENTIFIER__',
-          value: projectPlistJson['CFBundleIdentifier']
+          value: bundleId
         },
         {
           placeHolder: '__BUNDLE_SUFFIX__',
@@ -234,11 +234,13 @@ module.exports = function (context) {
       replacePlaceholdersInPlist(filePath, placeHolderValues);
       log('Successfully added app group information to the plugin Swift files!', 'success');
 
+      var extFullBundleId = bundleId + "." + extBundleId;
       // Add PBXNativeTarget to the project
       var target = pbxProject.addTarget(
         extName,
         'app_extension',
-        extName
+        extName,
+        extFullBundleId
       );
       if (target) {
         log('Successfully added PBXNativeTarget!', 'info');
