@@ -65,7 +65,8 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
             } else {
                 let lastRun = self.defaults?.double(forKey: "lastRun") ?? 0;
                 let currentTime = Date().timeIntervalSince1970
-                var queryStatementString = "SELECT * FROM \(TABLENAME) WHERE (updated > ? OR added > ?) ORDER BY CAST(number AS INTEGER) "
+                // Sort by remove to delete first and add numbers again after for update
+                var queryStatementString = "SELECT * FROM \(TABLENAME) WHERE (updated > ? OR added > ?) ORDER BY CAST(number AS INTEGER), remove DESC"
                 if mode == "addAll" {
                     queryStatementString = "SELECT * FROM \(TABLENAME) ORDER BY CAST(number AS INTEGER)"
                 }
