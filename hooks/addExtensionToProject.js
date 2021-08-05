@@ -370,7 +370,7 @@ module.exports = function (context) {
               }
               if (projectContainsSwiftFiles) {
                 buildSettingsObj['SWIFT_VERSION'] = '4.0';
-                buildSettingsObj['ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES'] = ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES || 'YES';
+                buildSettingsObj['ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES'] = ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES || 'NO';
                 log('Added build settings for swift support!', 'info');
               }
               if (addBridgingHeader) {
