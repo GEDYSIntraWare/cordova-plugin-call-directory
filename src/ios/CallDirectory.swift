@@ -237,6 +237,17 @@ let TABLENAME = "CallDirectoryNumbers"
         print(message)
     }
 
+    @objc(openCallSettings:)
+    func openCallSettings(_ command: CDVInvokedUrlCommand) {
+        if #available(iOS 13.4, *) {
+                        CXCallDirectoryManager.sharedInstance.openSettings { e in
+                        }
+                    } else {
+                        // Fallback on earlier versions
+                        self.log("Can't open call settings in iOS Versions below iOS 13.4");
+                    }
+    }
+
     override func pluginInitialize() {
         super.pluginInitialize()
         self.logEntries = []

@@ -73,4 +73,14 @@ CallDirectory.prototype.getLog = function (successCallback, errorCallback) {
   );
 };
 
+CallDirectory.prototype.openCallSettings = function (successCallback, errorCallback) {
+  cordova.exec(
+    successCallback,
+    errorCallback,
+    "CallDirectory",
+    "openCallSettings",
+    [{}]
+  );
+};
+
 module.exports = new CallDirectory();

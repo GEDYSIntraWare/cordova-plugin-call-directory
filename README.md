@@ -79,6 +79,16 @@ CallDirectory.getLog(
   (err) => console.error(err))
 ```
 
+### openCallSettings
+
+Opens the settings to enable the CallDirectory extension.
+
+```javascript
+CallDirectory.openCallSettings(
+  (value) => console.log(value),
+  (err) => console.error(err))
+```
+
 ## Error Codes
 [Apple documentation](https://developer.apple.com/documentation/callkit/cxerrorcodecalldirectorymanagererror.code)
 
