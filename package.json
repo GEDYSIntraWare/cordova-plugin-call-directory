@@ -33,17 +33,14 @@
   "dependencies": {
     "cordova-plugin-add-swift-support": "^2.0.2",
     "elementtree": "^0.1.7",
-    "file-system": "^2.2.2",
-    "path": "^0.12.7",
-    "plist": "^3.0.5",
+    "plist": "^3.1.0",
     "q": "^1.5.1",
     "xcode": "^3.0.1"
   },
   "devDependencies": {
     "cordova-paramedic": "git+https://github.com/apache/cordova-paramedic.git",
-    "cordova-plugin-xml": "^0.1.2",
-    "eslint": "^8.24.0",
-    "jasmine": "^2.8.0"
+    "eslint": "^9.39.1",
+    "jasmine": "^5.5.0"
   },
   "scripts": {
     "test": "npm run eslint",
@@ -53,7 +50,9 @@
     "test-ios": "npx cordova-paramedic --platform ios --plugin  $(pwd) --verbose",
     "test-browser": "npx cordova-paramedic --platform browser --plugin  $(pwd)",
     "test-saucelabs": "npm run test-saucelabs-ios && npm run test-saucelabs-android",
-    "test-saucelabs-ios": "npx cordova-paramedic --config ./pr/ios-10.0 --plugin  $(pwd) --shouldUseSauce",
-    "plugin-version": "cordova-plugin-xml setVersion"
+    "test-saucelabs-ios": "npx cordova-paramedic --config ./pr/ios-10.0 --plugin  $(pwd) --shouldUseSauce"
+  },
+  "overrides": {
+    "trim-newlines": "^5.0.0"
   }
 }
