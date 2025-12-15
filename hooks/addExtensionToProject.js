@@ -32,9 +32,9 @@ function log(logString, type) {
   console.log(prefix + logString + postfix);
 }
 
-function getPreferenceValue (config, name) {
+function getPreferenceValue(config, name) {
   var value = config.match(new RegExp('name="' + name + '" value="(.*?)"', "i"));
-  if(value && value[1]) {
+  if (value && value[1]) {
     return value[1];
   } else {
     return null;
@@ -42,18 +42,18 @@ function getPreferenceValue (config, name) {
 }
 
 function replacePlaceholdersInPlist(plistPath, placeHolderValues) {
-    var plistContents = fs.readFileSync(plistPath, 'utf8');
-    for (var i = 0; i < placeHolderValues.length; i++) {
-      var placeHolderValue = placeHolderValues[i],
+  var plistContents = fs.readFileSync(plistPath, 'utf8');
+  for (var i = 0; i < placeHolderValues.length; i++) {
+    var placeHolderValue = placeHolderValues[i],
       regexp = new RegExp(placeHolderValue.placeHolder, "g");
-      plistContents = plistContents.replace(regexp, placeHolderValue.value);
-    }
-    fs.writeFileSync(plistPath, plistContents);
+    plistContents = plistContents.replace(regexp, placeHolderValue.value);
+  }
+  fs.writeFileSync(plistPath, plistContents);
 }
 
 function getCordovaParameter(variableName, contents) {
   var variable;
-  if(process.argv.join("|").indexOf(variableName + "=") > -1) {
+  if (process.argv.join("|").indexOf(variableName + "=") > -1) {
     var re = new RegExp(variableName + '=(.*?)(\||$))', 'g');
     variable = process.argv.join("|").match(re)[1];
   } else {
@@ -125,7 +125,7 @@ module.exports = function (context) {
         pbxProject.parseSync();
       }
 
-      var extName = EXT_NAME || projectName.replace(/\s/g,'') + 'Directory';
+      var extName = EXT_NAME || projectName.replace(/\s/g, '') + 'Directory';
       log('Your extension will be named: ' + extName, 'info');
 
       var extBundleId = EXT_BUNDLE_SUFFIX || 'calldirectory';
@@ -244,6 +244,20 @@ module.exports = function (context) {
       );
       if (target) {
         log('Successfully added PBXNativeTarget!', 'info');
+      }
+
+      // Explicitly set PRODUCT_BUNDLE_IDENTIFIER to ensure proper prefix
+      var configurations = pbxProject.pbxXCBuildConfigurationSection();
+      for (var key in configurations) {
+        if (typeof configurations[key].buildSettings !== 'undefined') {
+          var buildSettingsObj = configurations[key].buildSettings;
+          if (typeof buildSettingsObj['PRODUCT_NAME'] !== 'undefined') {
+            var productName = buildSettingsObj['PRODUCT_NAME'];
+            if (productName.indexOf(extName) >= 0) {
+              buildSettingsObj['PRODUCT_BUNDLE_IDENTIFIER'] = extFullBundleId;
+            }
+          }
+        }
       }
 
       // Create a separate PBXGroup for the extension files, name has to be unique and path must be in quotation marks
